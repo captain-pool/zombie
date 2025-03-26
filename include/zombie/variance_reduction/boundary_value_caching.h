@@ -40,11 +40,11 @@ struct EvaluationPoint {
 
 protected:
     // members
-    std::unique_ptr<SampleStatistics<T, DIM>> absorbingBoundaryStatistics;
-    std::unique_ptr<SampleStatistics<T, DIM>> absorbingBoundaryNormalAlignedStatistics;
-    std::unique_ptr<SampleStatistics<T, DIM>> reflectingBoundaryStatistics;
-    std::unique_ptr<SampleStatistics<T, DIM>> reflectingBoundaryNormalAlignedStatistics;
-    std::unique_ptr<SampleStatistics<T, DIM>> sourceStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> absorbingBoundaryStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> absorbingBoundaryNormalAlignedStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> reflectingBoundaryStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> reflectingBoundaryNormalAlignedStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> sourceStatistics;
 
     template <typename A, size_t B>
     friend class BoundaryValueCaching;

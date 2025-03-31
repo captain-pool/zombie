@@ -114,27 +114,27 @@ void runBoundaryValueCaching(const Scene& scene, const json& solverConfig, const
         return !queries.outsideBoundingDomain(x);
     };
 
-    std::unique_ptr<zombie::BoundarySampler<float, 2>> absorbingBoundarySampler = 
-        std::make_unique<zombie::UniformLineSegmentBoundarySampler<float>>(scene.absorbingBoundaryVertices,
+    std::shared_ptr<zombie::BoundarySampler<float, 2>> absorbingBoundarySampler =
+        std::make_shared<zombie::UniformLineSegmentBoundarySampler<float>>(scene.absorbingBoundaryVertices,
                                                                            scene.absorbingBoundarySegments,
                                                                            queries, insideSolveRegionBoundarySampler);
     absorbingBoundarySampler->initialize(normalOffsetForAbsorbingBoundary, solveDoubleSided);
 
-    std::unique_ptr<zombie::BoundarySampler<float, 2>> reflectingBoundarySampler = 
-        std::make_unique<zombie::UniformLineSegmentBoundarySampler<float>>(scene.reflectingBoundaryVertices,
+    std::shared_ptr<zombie::BoundarySampler<float, 2>> reflectingBoundarySampler =
+        std::make_shared<zombie::UniformLineSegmentBoundarySampler<float>>(scene.reflectingBoundaryVertices,
                                                                            scene.reflectingBoundarySegments,
                                                                            queries, insideSolveRegionBoundarySampler);
     reflectingBoundarySampler->initialize(normalOffsetForReflectingBoundary, solveDoubleSided);
 
     std::function<bool(const Vector2&)> insideSolveRegionDomainSampler = {};
-    std::unique_ptr<zombie::DomainSampler<float, 2>> domainSampler = nullptr;
+    std::shared_ptr<zombie::DomainSampler<float, 2>> domainSampler = nullptr;
     if (!ignoreSourceContribution) {
         insideSolveRegionDomainSampler = [&queries, solveDoubleSided](const Vector2& x) -> bool {
             return solveDoubleSided ? !queries.outsideBoundingDomain(x) : queries.insideDomain(x, true);
         };
 
         float regionVolume = solveDoubleSided ? (bbox.second - bbox.first).prod() : std::fabs(queries.computeSignedDomainVolume());
-        domainSampler = std::make_unique<zombie::UniformDomainSampler<float, 2>>(queries, insideSolveRegionDomainSampler,
+        domainSampler = std::make_shared<zombie::UniformDomainSampler<float, 2>>(queries, insideSolveRegionDomainSampler,
                                                                                  bbox.first, bbox.second, regionVolume);
     }
 
@@ -143,9 +143,9 @@ void runBoundaryValueCaching(const Scene& scene, const json& solverConfig, const
     ProgressBar pb(totalWork);
     std::function<void(int, int)> reportProgress = [&pb](int i, int tid) -> void { pb.report(i, tid); };
 
-    zombie::bvc::BoundaryValueCachingSolver<float, 2> boundaryValueCaching(queries, absorbingBoundarySampler.get(),
-                                                                           reflectingBoundarySampler.get(),
-                                                                           domainSampler.get());
+    zombie::bvc::BoundaryValueCachingSolver<float, 2> boundaryValueCaching(queries, absorbingBoundarySampler,
+                                                                           reflectingBoundarySampler,
+                                                                           domainSampler);
 
     // generate boundary and domain samples
     boundaryValueCaching.generateSamples(absorbingBoundaryCacheSize, reflectingBoundaryCacheSize,

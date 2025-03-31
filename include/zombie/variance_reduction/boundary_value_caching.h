@@ -40,11 +40,11 @@ struct EvaluationPoint {
 
 protected:
     // members
-    std::unique_ptr<SampleStatistics<T, DIM>> absorbingBoundaryStatistics;
-    std::unique_ptr<SampleStatistics<T, DIM>> absorbingBoundaryNormalAlignedStatistics;
-    std::unique_ptr<SampleStatistics<T, DIM>> reflectingBoundaryStatistics;
-    std::unique_ptr<SampleStatistics<T, DIM>> reflectingBoundaryNormalAlignedStatistics;
-    std::unique_ptr<SampleStatistics<T, DIM>> sourceStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> absorbingBoundaryStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> absorbingBoundaryNormalAlignedStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> reflectingBoundaryStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> reflectingBoundaryNormalAlignedStatistics;
+    std::shared_ptr<SampleStatistics<T, DIM>> sourceStatistics;
 
     template <typename A, size_t B>
     friend class BoundaryValueCaching;
@@ -173,9 +173,9 @@ class BoundaryValueCachingSolver {
 public:
     // constructor
     BoundaryValueCachingSolver(const GeometricQueries<DIM>& queries_,
-                               BoundarySampler<T, DIM> *absorbingBoundarySampler_,
-                               BoundarySampler<T, DIM> *reflectingBoundarySampler_,
-                               DomainSampler<T, DIM> *domainSampler_);
+                               std::shared_ptr<BoundarySampler<T, DIM>>absorbingBoundarySampler_,
+                               std::shared_ptr<BoundarySampler<T, DIM>>reflectingBoundarySampler_,
+                               std::shared_ptr<DomainSampler<T, DIM>>domainSampler_);
 
     // generates boundary and domain samples
     void generateSamples(int absorbingBoundaryCacheSize,
@@ -222,9 +222,9 @@ public:
 protected:
     // members
     const GeometricQueries<DIM>& queries;
-    BoundarySampler<T, DIM> *absorbingBoundarySampler;
-    BoundarySampler<T, DIM> *reflectingBoundarySampler;
-    DomainSampler<T, DIM> *domainSampler;
+    std::shared_ptr<BoundarySampler<T, DIM>> absorbingBoundarySampler;
+    std::shared_ptr<BoundarySampler<T, DIM>> reflectingBoundarySampler;
+    std::shared_ptr<DomainSampler<T, DIM>> domainSampler;
     WalkOnStars<T, DIM> walkOnStars;
     BoundaryValueCaching<T, DIM> boundaryValueCaching;
     std::vector<SamplePoint<T, DIM>> absorbingBoundaryCache;
@@ -788,9 +788,9 @@ inline void BoundaryValueCaching<T, DIM>::splatSourceData(const SamplePoint<T, D
 
 template <typename T, size_t DIM>
 inline BoundaryValueCachingSolver<T, DIM>::BoundaryValueCachingSolver(const GeometricQueries<DIM>& queries_,
-                                                                      BoundarySampler<T, DIM> *absorbingBoundarySampler_,
-                                                                      BoundarySampler<T, DIM> *reflectingBoundarySampler_,
-                                                                      DomainSampler<T, DIM> *domainSampler_):
+                                                                      std::shared_ptr<BoundarySampler<T, DIM>> absorbingBoundarySampler_,
+                                                                      std::shared_ptr<BoundarySampler<T, DIM>> reflectingBoundarySampler_,
+                                                                      std::shared_ptr<DomainSampler<T, DIM>> domainSampler_):
                                                                       queries(queries_),
                                                                       absorbingBoundarySampler(absorbingBoundarySampler_),
                                                                       reflectingBoundarySampler(reflectingBoundarySampler_),

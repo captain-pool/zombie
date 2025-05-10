@@ -48,7 +48,7 @@ protected:
     PointCloud<DIM> data;
     nanoflann::KDTreeSingleIndexAdaptorParams params;
     using KD_Tree_T = nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Simple_Adaptor<float, PointCloud<DIM>>,
-                                                          PointCloud<DIM>, DIM>;
+                                                          PointCloud<DIM>, DIM, size_t>;
     KD_Tree_T tree;
 };
 

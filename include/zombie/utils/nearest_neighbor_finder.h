@@ -89,7 +89,7 @@ inline size_t NearestNeighborFinder<DIM>::radiusSearch(const Vector<DIM>& queryP
                                                        std::vector<size_t>& outIndices) const
 {
     float squaredRadius = radius*radius; // nanoflann wants a SQUARED raidus
-    std::vector<nanoflann::ResultItem<uint32_t, float>> resultItems;
+    std::vector<nanoflann::ResultItem<size_t, float>> resultItems;
     size_t nResultItems = tree.radiusSearch(&queryPt[0], squaredRadius, resultItems);
 
     outIndices.resize(nResultItems);

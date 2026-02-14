@@ -56,7 +56,7 @@ protected:
                            std::queue<WalkState<T, DIM>>& stateQueue) const;
 
     // performs a single random walk starting at the input point
-    WalkCompletionCode walk(const PDE<T, DIM>& pde,
+    virtual WalkCompletionCode walk(const PDE<T, DIM>& pde,
                             const WalkSettings& walkSettings,
                             float distToAbsorbingBoundary,
                             std::unique_ptr<GreensFnBall<DIM>>& greensFn,

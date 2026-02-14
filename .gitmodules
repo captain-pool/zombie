@@ -12,4 +12,5 @@
 	url = https://github.com/wjakob/nanobind.git
 [submodule "deps/fcpw"]
 	path = deps/fcpw
-	url = https://github.com/rohan-sawhney/fcpw.git
+	url = https://github.com/captain-pool/fcpw.git
+  branch = for-drw
